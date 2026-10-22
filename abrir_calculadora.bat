@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando a Interface Grafica da Calculadora...
+start javaw -cp "01_calculadora_socket/src" CalculadoraGUI

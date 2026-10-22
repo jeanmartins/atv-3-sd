@@ -1,0 +1,22 @@
+# Compilados Java
+*.class
+bin/
+
+# Pastas de IDEs
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Pasta de codigos de referencia do professor (repositorio externo)
+ref_codigosSD/
+
+# Wireshark temp
+*.pcapng.gz
