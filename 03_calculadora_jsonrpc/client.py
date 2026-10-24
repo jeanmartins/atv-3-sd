@@ -42,12 +42,22 @@ def chamar_rpc(metodo, parametros):
         resposta = json.loads(resposta_http.read().decode("utf-8"))
 
     if resposta.get("id") != identificador:
-        raise RuntimeError("O identificador da resposta não corresponde à chamada.")
+        raise RuntimeError(
+            "O identificador da resposta não corresponde à chamada."
+        )
 
     if resposta.get("error") is not None:
         erro = resposta["error"]
+        mensagem = erro["message"]
+
+        if "zero" in mensagem.lower() and metodo in (
+            "dividir",
+            "calcular_expressao",
+        ):
+            raise ZeroDivisionError(mensagem)
+
         raise ValueError(
-            f"Erro JSON-RPC {erro['code']}: {erro['message']}"
+            f"Erro JSON-RPC {erro['code']}: {mensagem}"
         )
 
     return resposta["result"]
@@ -67,15 +77,19 @@ def calcular_no_cliente(expressao):
             a = avaliar(no.left)
             b = avaliar(no.right)
 
-            metodo, operacao_local = OPERADORES[type(no.op)]
+            metodo, _ = OPERADORES[type(no.op)]
 
             return chamar_rpc(metodo, [a, b])
 
-        if isinstance(no, ast.UnaryOp) and isinstance(no.op, (ast.USub, ast.UAdd)):
+        if isinstance(no, ast.UnaryOp) and isinstance(
+            no.op, (ast.USub, ast.UAdd)
+        ):
             valor = avaliar(no.operand)
             return -valor if isinstance(no.op, ast.USub) else valor
 
-        raise ValueError("Expressão inválida ou operação não permitida.")
+        raise ValueError(
+            "Expressão inválida ou operação não permitida."
+        )
 
     return avaliar(arvore)
 
@@ -123,7 +137,9 @@ def main():
 
             elif opcao == "6":
                 expressao = input("Digite a expressão: ")
-                resultado = chamar_rpc("calcular_expressao", [expressao])
+                resultado = chamar_rpc(
+                    "calcular_expressao", [expressao]
+                )
 
             else:
                 print("Opção inválida.")
@@ -131,7 +147,11 @@ def main():
 
             print("Resultado:", resultado)
 
-        except (ValueError, SyntaxError, ZeroDivisionError) as erro:
+        except ZeroDivisionError as erro:
+            print("Erro: não é possível dividir por zero.")
+            print("Detalhes:", erro)
+
+        except (ValueError, SyntaxError) as erro:
             print("Erro:", erro)
 
         except (urllib.error.URLError, TimeoutError, OSError) as erro:
