@@ -61,7 +61,6 @@ Resposta:
 {
   "jsonrpc": "2.0",
   "result": 50,
-  "error": null,
   "id": 1
 }
 ```
@@ -72,6 +71,3 @@ Na opção de cálculo no cliente, a expressão é interpretada localmente e cad
 
 Na opção de cálculo no servidor, a expressão inteira é enviada em uma única chamada JSON-RPC.
 
-## Limitações
-
-A implementação destina-se a fins didáticos e utiliza HTTP sem criptografia, adequado para testes locais. Não deve ser exposta diretamente à internet sem medidas adicionais de segurança.
