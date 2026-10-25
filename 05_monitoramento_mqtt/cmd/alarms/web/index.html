@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoramento da Caldeira</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background: #0b1220; color: #e5e7eb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #172554, #0b1220 55%); }
+    main { width: min(1100px, 92vw); margin: 0 auto; padding: 40px 0; }
+    header { display: flex; justify-content: space-between; gap: 24px; align-items: center; margin-bottom: 30px; }
+    h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); }
+    .subtitle { color: #94a3b8; margin-top: 8px; }
+    .status { padding: 8px 14px; border: 1px solid #475569; border-radius: 999px; color: #fbbf24; white-space: nowrap; }
+    .status.online { color: #4ade80; border-color: #166534; background: #052e16; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .card { padding: 22px; border-radius: 18px; background: rgba(15, 23, 42, .88); border: 1px solid #334155; box-shadow: 0 14px 40px rgba(0,0,0,.22); }
+    .card h2 { margin: 0 0 12px; color: #94a3b8; font-size: .9rem; text-transform: uppercase; letter-spacing: .09em; }
+    .metric { font-size: 2.35rem; font-weight: 750; }
+    .metric small { font-size: 1rem; color: #94a3b8; }
+    .alarm { transition: transform .2s, border-color .2s; }
+    .alarm.active { transform: translateY(-3px); }
+    .alarm.warning.active { border-color: #f59e0b; background: #451a03; }
+    .alarm.danger.active { border-color: #ef4444; background: #450a0a; }
+    .alarm p { margin: 5px 0; color: #cbd5e1; }
+    section { margin-top: 24px; }
+    section > h2 { font-size: 1.15rem; }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; background: rgba(15,23,42,.9); }
+    th, td { padding: 13px 15px; text-align: left; border-bottom: 1px solid #263449; }
+    th { color: #94a3b8; font-size: .8rem; text-transform: uppercase; }
+    .empty { color: #64748b; text-align: center; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } header { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><h1>Monitoramento da Caldeira</h1><div class="subtitle">Alarmes MQTT em tempo real</div></div>
+      <div id="status" class="status">Conectando…</div>
+    </header>
+    <div class="grid">
+      <article class="card">
+        <h2>Média atual</h2>
+        <div class="metric"><span id="average">--</span> <small>°C</small></div>
+        <p id="reading-count">Aguardando leituras</p>
+      </article>
+      <article id="sudden-card" class="card alarm warning">
+        <h2>Aumento repentino</h2>
+        <div class="metric"><span id="sudden-count">0</span></div>
+        <p id="sudden-detail">Nenhum evento</p>
+      </article>
+      <article id="high-card" class="card alarm danger">
+        <h2>Temperatura alta</h2>
+        <div class="metric"><span id="high-count">0</span></div>
+        <p id="high-detail">Nenhum evento</p>
+      </article>
+    </div>
+    <section>
+      <h2>Histórico de alarmes</h2>
+      <table>
+        <thead><tr><th>Horário</th><th>Tipo</th><th>Média</th><th>Variação</th></tr></thead>
+        <tbody id="history"><tr class="empty"><td colspan="4">Nenhum alarme recebido</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script>
+    const statusEl = document.querySelector('#status');
+    const historyEl = document.querySelector('#history');
+    const counts = { sudden_temperature_rise: 0, high_temperature: 0 };
+    let hasAlarm = false;
+    const stream = new EventSource('/events');
+
+    stream.onopen = () => { statusEl.textContent = 'Conectado'; statusEl.classList.add('online'); };
+    stream.onerror = () => { statusEl.textContent = 'Reconectando…'; statusEl.classList.remove('online'); };
+    stream.onmessage = event => {
+      const message = JSON.parse(event.data);
+      const payload = message.payload;
+      if (message.kind === 'average') {
+        document.querySelector('#average').textContent = payload.average.toFixed(2);
+        document.querySelector('#reading-count').textContent = `${payload.reading_count} leituras na janela de ${payload.window_seconds}s`;
+        updateHighTemperatureState(payload.average);
+        return;
+      }
+      showAlarm(payload);
+    };
+
+    function showAlarm(alarm) {
+      if (!hasAlarm) { historyEl.innerHTML = ''; hasAlarm = true; }
+      const sudden = alarm.event === 'sudden_temperature_rise';
+      const prefix = sudden ? 'sudden' : 'high';
+      const card = document.querySelector(`#${prefix}-card`);
+      counts[alarm.event] = (counts[alarm.event] || 0) + 1;
+      document.querySelector(`#${prefix}-count`).textContent = counts[alarm.event];
+      document.querySelector(`#${prefix}-detail`).textContent = `Média ${alarm.current_average.toFixed(2)} °C · Δ ${signed(alarm.delta)} °C`;
+      card.classList.add('active');
+      if (sudden) {
+        setTimeout(() => card.classList.remove('active'), 5000);
+      }
+
+      const row = document.createElement('tr');
+      const label = sudden ? 'Aumento repentino' : 'Temperatura alta';
+      row.innerHTML = `<td>${new Date(alarm.timestamp).toLocaleString('pt-BR')}</td><td>${label}</td><td>${alarm.current_average.toFixed(2)} °C</td><td>${signed(alarm.delta)} °C</td>`;
+      historyEl.prepend(row);
+    }
+
+    function updateHighTemperatureState(average) {
+      const card = document.querySelector('#high-card');
+      if (average > 200) {
+        card.classList.add('active');
+        return;
+      }
+      if (card.classList.contains('active')) {
+        card.classList.remove('active');
+        document.querySelector('#high-detail').textContent = `Situação normalizada · média ${average.toFixed(2)} °C`;
+      }
+    }
+
+    function signed(value) { return `${value >= 0 ? '+' : ''}${value.toFixed(2)}`; }
+  </script>
+</body>
+</html>
