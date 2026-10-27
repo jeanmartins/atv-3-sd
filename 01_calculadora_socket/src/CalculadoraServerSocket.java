@@ -66,8 +66,11 @@ public class CalculadoraServerSocket {
                 // desejada
                 String tipoOperacaoStr = socketEntrada.readLine();
 
+                // readLine devolve null se o cliente fechou a conexao sem enviar nada
                 if (tipoOperacaoStr != null) {
+                    // Converte o texto recebido pela rede (ex: "1") no codigo numerico da operacao
                     int tipoOperacao = Integer.parseInt(tipoOperacaoStr.trim());
+                    // Texto que sera devolvido ao cliente pela rede
                     String respostaParaCliente = "";
 
                     // Casos 1 a 4: Operações básicas individuais (soma, subtração, divisão,
@@ -78,6 +81,7 @@ public class CalculadoraServerSocket {
                         // Lê a terceira linha: segundo operando
                         String oper2Str = socketEntrada.readLine();
 
+                        // Converte os operandos recebidos como texto pela rede em numeros
                         double a = Double.parseDouble(oper1Str.trim());
                         double b = Double.parseDouble(oper2Str.trim());
                         double resultado = 0;
@@ -104,6 +108,7 @@ public class CalculadoraServerSocket {
 
                     } else if (tipoOperacao == 5) {
                         // Caso 5: Abordagem 2 (Expressão matemática calculada inteiramente no servidor)
+                        // Lê a segunda linha: a expressao inteira enviada pelo cliente
                         String expressao = socketEntrada.readLine();
                         System.out.println("  Calculando expressao no servidor: " + expressao);
                         double resultado = calc.avaliarExpressao(expressao);

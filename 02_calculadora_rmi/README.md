@@ -1,5 +1,7 @@
 # Módulo 2: Calculadora Distribuída via Java RMI
 
+Evolução do projeto `ExemploRMI` dos professores ([codigosSD](https://github.com/windcarvalho/codigosSD/tree/master/ExemploRMI)), que só tinha a soma. As linhas de comunicação RMI estão comentadas uma a uma, como pede o enunciado.
+
 RMI (Remote Method Invocation) deixa o cliente chamar um método que roda em **outra JVM** como se fosse local:
 `calc.soma(10, 5)`. O Java cuida de serializar os argumentos, enviar pela rede e devolver o resultado.
 

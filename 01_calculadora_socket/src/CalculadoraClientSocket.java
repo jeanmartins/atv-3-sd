@@ -117,6 +117,7 @@ public class CalculadoraClientSocket {
         // Encerra a conexao TCP com o servidor (envio de pacote TCP FIN)
         clientSocket.close();
 
+        // Converte o texto recebido pela rede (ex: "15.0") em numero e devolve
         return Double.parseDouble(resultadoStr.trim());
     }
 
@@ -150,11 +151,16 @@ public class CalculadoraClientSocket {
         // Le a resposta do servidor contendo o valor final calculado da expressao
         String resultadoStr = messageFromServer.readLine();
 
-        // Fecha os recursos de fluxo e a conexao TCP com o servidor
+        // Fecha o leitor de entrada do socket
         messageFromServer.close();
+
+        // Fecha o fluxo de escrita do socket
         socketSaidaServer.close();
+
+        // Encerra a conexao TCP com o servidor (envio de pacote TCP FIN)
         clientSocket.close();
 
+        // Converte o texto recebido pela rede (ex: "100.0") em numero e devolve
         return Double.parseDouble(resultadoStr.trim());
     }
 

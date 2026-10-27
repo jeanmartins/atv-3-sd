@@ -63,10 +63,13 @@ public class CalculadoraCliente {
     /** Invoca remotamente a operacao basica correspondente ao simbolo (+, -, *, /). */
     private static double chamarOperacao(String simbolo, double a, double b) throws Exception {
         switch (simbolo) {
-            // Invocacao remota: o stub serializa a, b, envia ao servidor e devolve o resultado
+            // Invocacao remota de soma: o stub serializa a e b, envia ao servidor e espera o resultado
             case "+": return calc.soma(a, b);
+            // Invocacao remota de subtracao (mesmo mecanismo: serializa, envia, aguarda resposta)
             case "-": return calc.subtrai(a, b);
+            // Invocacao remota de multiplicacao
             case "*": return calc.multiplica(a, b);
+            // Invocacao remota de divisao (se b == 0, a excecao do servidor chega aqui)
             case "/": return calc.divide(a, b);
             default: throw new IllegalArgumentException("Operador invalido: " + simbolo);
         }
