@@ -1,0 +1,361 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f6f8;
+    color: #333333;
+    padding: 20px;
+}
+
+.app-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Cabeçalho */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 14px 20px;
+}
+
+.header h1 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 2px;
+}
+
+/* Grade Principal */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cartões */
+.card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.card h3 {
+    font-size: 1rem;
+    color: #333333;
+}
+
+/* Modos */
+.mode-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 8px 6px;
+    border: 1px solid #cccccc;
+    background: #f8f9fa;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #333333;
+}
+
+.tab-btn:hover {
+    background: #e9ecef;
+}
+
+.tab-btn.active {
+    background: #0066cc;
+    color: #ffffff;
+    border-color: #0066cc;
+    font-weight: bold;
+}
+
+/* Display */
+.display-container {
+    background: #fafafa;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.display-history {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #777777;
+    min-height: 18px;
+    word-break: break-all;
+}
+
+.display-main {
+    font-family: monospace;
+    font-size: 1.6rem;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    color: #111111;
+}
+
+.display-result {
+    font-family: monospace;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #28a745;
+    text-align: right;
+}
+
+.display-result.error {
+    color: #dc3545;
+}
+
+/* Teclado */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.key {
+    padding: 12px 0;
+    font-family: monospace;
+    font-size: 1.2rem;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #222222;
+}
+
+.key:hover {
+    background: #e9ecef;
+}
+
+.key-fn {
+    background: #fff8e1;
+    color: #856404;
+}
+
+.key-fn:hover {
+    background: #ffecb3;
+}
+
+.key-op {
+    background: #f0f4fa;
+    color: #0066cc;
+    font-weight: bold;
+}
+
+.key-op:hover {
+    background: #e1ebf7;
+}
+
+.key-equals {
+    background: #0066cc;
+    color: #ffffff;
+    font-weight: bold;
+    border-color: #0066cc;
+}
+
+.key-equals:hover {
+    background: #0052a3;
+}
+
+/* Modo Individual Direto */
+.direct-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: #fafafa;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    color: #555555;
+}
+
+.input-group input,
+.input-group select {
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #0066cc;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #0052a3;
+}
+
+/* Painel Lateral & Retry */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.retry-config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.config-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.config-field label {
+    font-size: 0.82rem;
+    color: #555555;
+}
+
+.config-field input {
+    padding: 6px 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.retry-toggle-row {
+    font-size: 0.85rem;
+    color: #444444;
+}
+
+.retry-toggle-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* Log */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-clear {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: #555555;
+}
+
+.btn-clear:hover {
+    background: #eeeeee;
+}
+
+.flex-grow-card {
+    flex: 1;
+}
+
+.network-log {
+    background: #fafafa;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.78rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.log-entry {
+    line-height: 1.4;
+    word-break: break-all;
+}
+
+.log-time {
+    color: #888888;
+    margin-right: 4px;
+}
+
+.log-info {
+    color: #333333;
+}
+
+.log-step {
+    color: #0066cc;
+}
+
+.log-success {
+    color: #28a745;
+}
+
+.log-retry {
+    color: #856404;
+}
+
+.log-error {
+    color: #dc3545;
+}
+
+/* Rodapé */
+.app-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888888;
+    padding: 8px 0;
+}

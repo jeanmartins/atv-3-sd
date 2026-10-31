@@ -1,0 +1,19 @@
+{
+  "name": "04-calculadora-rest",
+  "version": "1.0.0",
+  "description": "Calculadora Distribuída HTTP-REST com Abordagens 1 e 2 de Expressões e Política de Retry (CKP7500 - Sistemas Distribuídos)",
+  "scripts": {
+    "server": "node server/server.js",
+    "client": "node client/client.js",
+    "test:retry": "node client/test_retry.js"
+  },
+  "keywords": [
+    "rest",
+    "http",
+    "express",
+    "calculator",
+    "retry"
+  ],
+  "author": "",
+  "license": "ISC"
+}

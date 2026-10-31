@@ -1,0 +1,22 @@
+{
+  "name": "calculadora-rest-server",
+  "version": "1.0.0",
+  "description": "Servidor HTTP-REST para Calculadora Distribuída (CKP7500 - Sistemas Distribuídos)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rest",
+    "express",
+    "calculator",
+    "sistemas-distribuidos"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0"
+  }
+}

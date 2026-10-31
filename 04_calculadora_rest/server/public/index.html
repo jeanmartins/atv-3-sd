@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Distribuída HTTP-REST</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Cabeçalho -->
+        <header class="header">
+            <div>
+                <h1>Calculadora Distribuída HTTP-REST</h1>
+                <p class="subtitle">Sistemas Distribuídos - Cliente / Servidor</p>
+            </div>
+        </header>
+
+        <!-- Grade Principal -->
+        <main class="main-grid">
+            <!-- Painel da Calculadora -->
+            <section class="card">
+                <!-- Seletor de Modo -->
+                <div class="mode-tabs">
+                    <button class="tab-btn active" id="tabClientMode" onclick="setMode('client_mode')">
+                        Expressão (Cliente)
+                    </button>
+                    <button class="tab-btn" id="tabServerMode" onclick="setMode('server_mode')">
+                        Expressão (Servidor)
+                    </button>
+                    <button class="tab-btn" id="tabDirect" onclick="setMode('direct')">
+                        Operação Individual
+                    </button>
+                </div>
+
+                <!-- Display -->
+                <div class="display-container">
+                    <div class="display-history" id="displayHistory">Aguardando operação...</div>
+                    <input type="text" class="display-main" id="displayInput" placeholder="0" autocomplete="off">
+                    <div class="display-result" id="displayResult">= 0</div>
+                </div>
+
+                <!-- Formulário para Modo Individual Direto -->
+                <div class="direct-inputs" id="directInputsContainer" style="display: none;">
+                    <div class="input-group">
+                        <label for="directOper1">Operando 1:</label>
+                        <input type="number" id="directOper1" placeholder="Ex: 10" step="any">
+                    </div>
+                    <div class="input-group">
+                        <label for="directOperacao">Operação:</label>
+                        <select id="directOperacao">
+                            <option value="1">1 - Soma (+)</option>
+                            <option value="2">2 - Subtração (-)</option>
+                            <option value="3">3 - Multiplicação (*)</option>
+                            <option value="4">4 - Divisão (/)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="directOper2">Operando 2:</label>
+                        <input type="number" id="directOper2" placeholder="Ex: 5" step="any">
+                    </div>
+                    <button class="btn btn-primary" id="btnCalcularDireto" onclick="executarCalculoDireto()">
+                        Calcular via POST /operacao
+                    </button>
+                </div>
+
+                <!-- Teclado -->
+                <div class="keypad" id="keypadContainer">
+                    <button class="key key-fn" onclick="clearDisplay()">C</button>
+                    <button class="key key-fn" onclick="appendToken('(')">(</button>
+                    <button class="key key-fn" onclick="appendToken(')')">)</button>
+                    <button class="key key-op" onclick="appendToken(' / ')">/</button>
+
+                    <button class="key" onclick="appendToken('7')">7</button>
+                    <button class="key" onclick="appendToken('8')">8</button>
+                    <button class="key" onclick="appendToken('9')">9</button>
+                    <button class="key key-op" onclick="appendToken(' * ')">*</button>
+
+                    <button class="key" onclick="appendToken('4')">4</button>
+                    <button class="key" onclick="appendToken('5')">5</button>
+                    <button class="key" onclick="appendToken('6')">6</button>
+                    <button class="key key-op" onclick="appendToken(' - ')">-</button>
+
+                    <button class="key" onclick="appendToken('1')">1</button>
+                    <button class="key" onclick="appendToken('2')">2</button>
+                    <button class="key" onclick="appendToken('3')">3</button>
+                    <button class="key key-op" onclick="appendToken(' + ')">+</button>
+
+                    <button class="key" onclick="appendToken('0')">0</button>
+                    <button class="key" onclick="appendToken('.')">.</button>
+                    <button class="key key-fn" onclick="backspace()">⌫</button>
+                    <button class="key key-equals" id="btnEquals" onclick="calcularExpressao()">=</button>
+                </div>
+            </section>
+
+            <!-- Painel Lateral: Configuração e Log -->
+            <section class="side-panel">
+                <div class="card">
+                    <h3>Configuração de Retry</h3>
+                    <div class="retry-config-grid">
+                        <div class="config-field">
+                            <label for="cfgRetries">Tentativas Máximas:</label>
+                            <input type="number" id="cfgRetries" value="3" min="1" max="10">
+                        </div>
+                        <div class="config-field">
+                            <label for="cfgDelay">Espera Ts (ms):</label>
+                            <input type="number" id="cfgDelay" value="2000" min="500" step="500">
+                        </div>
+                    </div>
+                    <div class="retry-toggle-row">
+                        <label>
+                            <input type="checkbox" id="cfgSimularOffline">
+                            Simular Servidor Offline
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card flex-grow-card">
+                    <div class="card-header">
+                        <h3>Log de Comunicação HTTP</h3>
+                        <button class="btn-clear" onclick="limparLogs()">Limpar Log</button>
+                    </div>
+                    <div class="network-log" id="networkLog">
+                        <div class="log-entry log-info">
+                            <span class="log-time">[00:00:00]</span>
+                            <span class="log-msg">Sistema pronto.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

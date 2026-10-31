@@ -1,0 +1,19 @@
+{
+  "name": "calculadora-rest-client",
+  "version": "1.0.0",
+  "description": "Cliente HTTP-REST com CLI, avaliação de expressões e política de Retry",
+  "main": "client.js",
+  "scripts": {
+    "start": "node client.js",
+    "test:retry": "node test_retry.js",
+    "test": "node test_retry.js"
+  },
+  "keywords": [
+    "rest",
+    "calculator",
+    "retry",
+    "sistemas-distribuidos"
+  ],
+  "author": "",
+  "license": "ISC"
+}
